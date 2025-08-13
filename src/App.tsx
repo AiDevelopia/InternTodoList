@@ -1,35 +1,78 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
+import "./App.css";
+import { TodoForm } from "./components/TodoForm";
+import { TodoList } from "./components/TodoList";
+import { TodoFilter } from "./components/TodoFilter";
 
-function App() {
-  const [count, setCount] = useState(0)
-
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+interface Todo {
+  id: number;
+  text: string;
+  completed: boolean;
 }
 
-export default App
+export default function App() {
+  const [todos, setTodos] = useState<Todo[]>([]);
+  const [filter, setFilter] = useState<"all" | "active" | "completed">("all");
+
+  // Add a new todo
+  const addTodo = (title: string) => {
+    const newTodo: Todo = {
+      id: Date.now(),
+      text: title,
+      completed: false,
+    };
+    setTodos((prev) => [...prev, newTodo]);
+  };
+
+  // Toggle completion
+  const toggleTodo = (id: number) => {
+    setTodos((prev) =>
+      prev.map((todo) =>
+        todo.id === id ? { ...todo, completed: !todo.completed } : todo
+      )
+    );
+  };
+
+  // Update todo text
+  const updateTodo = (id: number, newText: string) => {
+    setTodos((prev) =>
+      prev.map((todo) => (todo.id === id ? { ...todo, text: newText } : todo))
+    );
+  };
+
+  // Delete a todo
+  const deleteTodo = (id: number) => {
+    setTodos((prev) => prev.filter((todo) => todo.id !== id));
+  };
+
+  // Filter todos based on selection
+  const filteredTodos = todos.filter((todo) => {
+    if (filter === "active") return !todo.completed;
+    if (filter === "completed") return todo.completed;
+    return true; // all
+  });
+
+  return (
+    <div className="app p-6 max-w-lg mx-auto">
+      <h1 className="text-2xl font-bold mb-4">Todo App</h1>
+
+      {/* Form to add todos */}
+      <TodoForm onAddTodo={addTodo} />
+
+      {/* Filter buttons */}
+      <div className="mt-4">
+        {/* <TodoFilter filter={filter} onChangeFilter={setFilter} /> */}
+      </div>
+
+      {/* List of todos */}
+      <div className="mt-4">
+        <TodoList
+          todos={filteredTodos}
+          onToggle={toggleTodo}
+          onUpdate={updateTodo}
+          onDelete={deleteTodo}
+        />
+      </div>
+    </div>
+  );
+}
