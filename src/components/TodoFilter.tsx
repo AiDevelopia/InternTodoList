@@ -1,29 +1,49 @@
-// src/components/TodoFilter.tsx
-import type { FC } from "react";
+import React from "react";
 
 interface TodoFilterProps {
-  filter: string;
-  onChangeFilter: (filter: string) => void;
+  currentFilter: "all" | "active" | "completed";
+  onFilterChange: (filter: "all" | "active" | "completed") => void;
+  stats: { total: number; active: number; completed: number };
+  onClearCompleted: () => void;
+  onToggleAll: () => void;
 }
 
-export const TodoFilter: FC<TodoFilterProps> = ({ filter, onChangeFilter }) => {
+export function TodoFilter({
+  currentFilter,
+  onFilterChange,
+  stats,
+  onClearCompleted,
+  onToggleAll,
+}: TodoFilterProps) {
   return (
-    <div>
-      <button onClick={() => onChangeFilter("all")} disabled={filter === "all"}>
+    <div className="todo-filter">
+      <button
+        disabled={currentFilter === "all"}
+        onClick={() => onFilterChange("all")}
+      >
         All
       </button>
       <button
-        onClick={() => onChangeFilter("active")}
-        disabled={filter === "active"}
+        disabled={currentFilter === "active"}
+        onClick={() => onFilterChange("active")}
       >
         Active
       </button>
       <button
-        onClick={() => onChangeFilter("completed")}
-        disabled={filter === "completed"}
+        disabled={currentFilter === "completed"}
+        onClick={() => onFilterChange("completed")}
       >
         Completed
       </button>
+
+      <div>
+        <span>Total: {stats.total}</span>
+        <span>Active: {stats.active}</span>
+        <span>Completed: {stats.completed}</span>
+      </div>
+
+      <button onClick={onClearCompleted}>Clear Completed</button>
+      <button onClick={onToggleAll}>Toggle All</button>
     </div>
   );
-};
+}
