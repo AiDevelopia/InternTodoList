@@ -169,7 +169,7 @@ export function TodoForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex items-center gap-2 bg-white shadow-md p-3 rounded-xl w-full"
+      className="flex items-center gap-3 w-full bg-gray-100 rounded-full px-4 py-2 shadow-sm"
     >
       <label htmlFor="todo-input" className="sr-only">
         New todo
@@ -180,11 +180,11 @@ export function TodoForm({
         value={inputText}
         onChange={handleChange}
         placeholder={placeholder}
-        className="flex-grow p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className="flex-grow bg-transparent border-none focus:ring-0 focus:outline-none placeholder-gray-400 text-gray-700"
       />
       <button
         type="submit"
-        className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-all"
+        className="bg-blue-500 hover:bg-blue-600 text-white px-5 py-2 rounded-full font-medium transition-colors"
       >
         Add
       </button>

@@ -98,8 +98,79 @@
 
 // export default TodoList;
 
+// import type { FC } from "react";
+
+// interface Todo {
+//   id: number;
+//   text: string;
+//   completed: boolean;
+// }
+
+// interface TodoListProps {
+//   todos: Todo[];
+//   onToggle: (id: number) => void;
+//   onUpdate: (id: number, newText: string) => void;
+//   onDelete: (id: number) => void;
+// }
+
+// export const TodoList: FC<TodoListProps> = ({ todos, onToggle, onUpdate, onDelete }) => {
+//   if (todos.length === 0) {
+//     return (
+//       <p>
+//         What do you plan on doing today? Add it to the list and let's crush
+//         some goals!
+//       </p>
+//     );
+//   }
+
+//   return (
+//     <div>
+//       <h2 className="text-xl font-bold mb-4">My Todos</h2>
+//       <ul>
+//         {todos.map((todo) => (
+//           <li
+//             key={todo.id}
+//             className="flex items-center justify-between bg-gray-100 p-2 rounded mb-2"
+//           >
+//             {/* Click to toggle completion */}
+//             <span
+//               onClick={() => onToggle(todo.id)}
+//               className={`cursor-pointer ${
+//                 todo.completed ? "line-through text-gray-400" : ""
+//               }`}
+//             >
+//               {todo.text}
+//             </span>
+
+//             {/* Edit and delete */}
+//             <div className="space-x-2">
+//               <button
+//                 onClick={() => {
+//                   const newText = prompt("Edit your todo", todo.text);
+//                   if (newText !== null && newText.trim() !== "") {
+//                     onUpdate(todo.id, newText.trim());
+//                   }
+//                 }}
+//                 className="bg-blue-500 text-white px-2 py-1 rounded"
+//               >
+//                 Edit
+//               </button>
+//               <button
+//                 onClick={() => onDelete(todo.id)}
+//                 className="bg-red-500 text-white px-2 py-1 rounded"
+//               >
+//                 Delete
+//               </button>
+//             </div>
+//           </li>
+//         ))}
+//       </ul>
+//     </div>
+//   );
+// };
 
 import type { FC } from "react";
+import { TodoListItem } from "./TodoListItem"; // import the new component
 
 interface Todo {
   id: number;
@@ -114,12 +185,17 @@ interface TodoListProps {
   onDelete: (id: number) => void;
 }
 
-export const TodoList: FC<TodoListProps> = ({ todos, onToggle, onUpdate, onDelete }) => {
+export const TodoList: FC<TodoListProps> = ({
+  todos,
+  onToggle,
+  onUpdate,
+  onDelete,
+}) => {
   if (todos.length === 0) {
     return (
       <p>
-        What do you plan on doing today? Add it to the list and let's crush
-        some goals!
+        What do you plan on doing today? Add it to the list and let's crush some
+        goals!
       </p>
     );
   }
@@ -127,43 +203,15 @@ export const TodoList: FC<TodoListProps> = ({ todos, onToggle, onUpdate, onDelet
   return (
     <div>
       <h2 className="text-xl font-bold mb-4">My Todos</h2>
-      <ul>
+      <ul className="space-y-2">
         {todos.map((todo) => (
-          <li
+          <TodoListItem
             key={todo.id}
-            className="flex items-center justify-between bg-gray-100 p-2 rounded mb-2"
-          >
-            {/* Click to toggle completion */}
-            <span
-              onClick={() => onToggle(todo.id)}
-              className={`cursor-pointer ${
-                todo.completed ? "line-through text-gray-400" : ""
-              }`}
-            >
-              {todo.text}
-            </span>
-
-            {/* Edit and delete */}
-            <div className="space-x-2">
-              <button
-                onClick={() => {
-                  const newText = prompt("Edit your todo", todo.text);
-                  if (newText !== null && newText.trim() !== "") {
-                    onUpdate(todo.id, newText.trim());
-                  }
-                }}
-                className="bg-blue-500 text-white px-2 py-1 rounded"
-              >
-                Edit
-              </button>
-              <button
-                onClick={() => onDelete(todo.id)}
-                className="bg-red-500 text-white px-2 py-1 rounded"
-              >
-                Delete
-              </button>
-            </div>
-          </li>
+            todo={todo}
+            onToggle={onToggle}
+            onUpdate={onUpdate}
+            onDelete={onDelete}
+          />
         ))}
       </ul>
     </div>
