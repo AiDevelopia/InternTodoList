@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import type { FC } from "react";
 
 interface Todo {
@@ -22,12 +22,25 @@ export const TodoListItem: FC<TodoListItemProps> = ({
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editText, setEditText] = useState(todo.text);
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  const handleSave = () => {
+  // Focus input when editing starts
+  useEffect(() => {
+    if (isEditing && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [isEditing]);
+
+  const handleDone = () => {
     if (editText.trim() !== "") {
       onUpdate(todo.id, editText.trim());
       setIsEditing(false);
     }
+  };
+
+  const handleCancel = () => {
+    setEditText(todo.text); // reset to original text
+    setIsEditing(false);
   };
 
   return (
@@ -43,33 +56,58 @@ export const TodoListItem: FC<TodoListItemProps> = ({
 
         {/* Inline edit or text */}
         {isEditing ? (
-          <input
-            value={editText}
-            onChange={(e) => setEditText(e.target.value)}
-            onBlur={handleSave}
-            onKeyDown={(e) => e.key === "Enter" && handleSave()}
-            className="border rounded px-2 py-1"
-            autoFocus
-          />
+        <input
+  ref={inputRef}
+  value={editText}
+  onChange={(e) => setEditText(e.target.value)}
+  className="border rounded px-3 py-2 w-full sm:w-64 focus:outline-none focus:ring-2 focus:ring-blue-400 text-left"
+/>
         ) : (
           <span
-            onDoubleClick={() => setIsEditing(true)}
-            className={`cursor-pointer ${
-              todo.completed ? "line-through text-gray-400" : ""
-            }`}
-          >
-            {todo.text}
-          </span>
+  onDoubleClick={() => setIsEditing(true)}
+  className={`cursor-pointer break-words text-base text-left ${
+    todo.completed ? "line-through text-gray-400" : "text-gray-800"
+  }`}
+>
+  {todo.text}
+</span>
         )}
       </div>
 
-      {/* Delete button */}
-      <button
-        onClick={() => onDelete(todo.id)}
-        className="bg-red-500 text-white px-2 py-1 rounded"
-      >
-        Delete
-      </button>
+      <div className="flex gap-2">
+        {/* Edit / Done / Cancel buttons */}
+        {isEditing ? (
+          <>
+            <button
+              onClick={handleDone}
+              className="bg-green-500 text-white px-2 py-1 rounded"
+            >
+              Done
+            </button>
+            <button
+              onClick={handleCancel}
+              className="bg-gray-400 text-white px-2 py-1 rounded"
+            >
+              Cancel
+            </button>
+          </>
+        ) : (
+          <button
+            onClick={() => setIsEditing(true)}
+            className="bg-yellow-500 text-white px-2 py-1 rounded"
+          >
+            Edit
+          </button>
+        )}
+
+        {/* Delete button */}
+        <button
+          onClick={() => onDelete(todo.id)}
+          className="bg-red-500 text-white px-2 py-1 rounded"
+        >
+          Delete
+        </button>
+      </div>
     </li>
   );
 };

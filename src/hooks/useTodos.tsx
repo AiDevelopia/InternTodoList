@@ -1,12 +1,11 @@
-// src/hooks/useTodos.ts
 import { useState } from 'react'
+import { useLocalStorage } from './useLocalStorage'
 import type { Todo } from '../types/type'
 
 export function useTodos() {
-  const [todos, setTodos] = useState<Todo[]>([])
+  const [todos, setTodos] = useLocalStorage<Todo[]>('todos', [])
   const [filter, setFilter] = useState<'all' | 'active' | 'completed'>('all')
 
-  // Stats
   const stats = {
     total: todos.length,
     active: todos.filter(todo => !todo.completed).length,
@@ -14,11 +13,7 @@ export function useTodos() {
   }
 
   const addTodo = (text: string) => {
-    const newTodo: Todo = {
-      id: Date.now(),
-      text,
-      completed: false,
-    }
+    const newTodo: Todo = { id: Date.now(), text, completed: false }
     setTodos(prev => [...prev, newTodo])
   }
 
